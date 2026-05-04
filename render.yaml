@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: findawall
+    runtime: node
+    plan: free
+    buildCommand: cd backend && yarn install --frozen-lockfile && cd ../unsplash-gallery && yarn install --frozen-lockfile && yarn build && cd ../backend && yarn build
+    startCommand: cd backend && node dist/index.js
+    healthCheckPath: /
+    autoDeployTrigger: commit
+    envVars:
+      - key: ACCESS_KEY
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+      - key: NODE_OPTIONS
+        value: --openssl-legacy-provider

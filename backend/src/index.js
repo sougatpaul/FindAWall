@@ -5,7 +5,8 @@ import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
-import fs from 'fs'
+import fs from 'fs';
+import path from 'path';
 
 dotenv.config();
 
@@ -19,9 +20,14 @@ const unsplash = new Unsplash({
 
 const app = express();
 
+const logsDir = path.join(process.cwd(), 'logs');
+fs.mkdirSync(logsDir, { recursive: true });
+
 app.use(cors());
-app.use(morgan('dev'))
-app.use(morgan('combined', {stream: fs.createWriteStream('./logs/requests.log', {flags: 'a'})}))
+app.use(morgan('dev'));
+app.use(morgan('combined', {
+  stream: fs.createWriteStream(path.join(logsDir, 'requests.log'), { flags: 'a' }),
+}));
 
 
 app.get('/api/photos', (req, res) => {
@@ -31,6 +37,7 @@ app.get('/api/photos', (req, res) => {
     .then((json) => res.json(json))
     .catch((error) => {
       console.log(error);
+      res.status(500).json({ error: 'Unable to fetch photos' });
     });
 });
 
@@ -41,10 +48,21 @@ app.get('/api/photos/search', (req, res) => {
     .then((json) => res.json(json))
     .catch((error) => {
       console.log(error);
+      res.status(500).json({ error: 'Unable to search photos' });
     });
 });
 
-const { PORT = 5001 } = process.env.PORT;
+const clientBuildPath = path.resolve(__dirname, '../../unsplash-gallery/build');
+
+if (fs.existsSync(clientBuildPath)) {
+  app.use(express.static(clientBuildPath));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(clientBuildPath, 'index.html'));
+  });
+}
+
+const PORT = process.env.PORT || 5001;
 
 app.listen(PORT, () => {
   console.log(`Listening on ${PORT}`);

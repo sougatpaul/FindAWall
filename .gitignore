@@ -4,6 +4,8 @@ node_modules/
 .env.*.local
 
 backend/.env
+backend/dist/
 backend/logs/
+logs/
 unsplash-gallery/.env
 unsplash-gallery/build/
