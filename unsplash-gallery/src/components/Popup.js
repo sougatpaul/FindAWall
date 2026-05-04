@@ -10,35 +10,43 @@ const PopupOverlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   z-index: 6000;
   padding: 2rem;
-  overflow-y: scroll;
+  overflow-y: auto;
+
+  @media (max-width: 36rem) {
+    padding: 1rem;
+  }
 `;
 const PopupCard = styled.div`
   margin: auto;
-  /* max-width : 55rem;
-    width: 100%; */
+  width: 100%;
+  max-width: 72rem;
   padding: 1rem;
   background: white;
-  border-radius: 1rem;
+  border-radius: 0.5rem;
 `;
 
 const ImageContainer = styled.div`
   position: relative;
   width: 100%;
-  min-width: 60rem;
+  min-height: 18rem;
   height: 80vh;
+  max-height: 45rem;
   display: flex;
   justify-content: center;
+  align-items: center;
   background: #f3f3f3;
   border-radius: 0.5rem;
   padding: 1rem;
   img {
-    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
     border-radius: 0.5rem;
   }
 `;
@@ -46,6 +54,8 @@ const ImageContainer = styled.div`
 const TitleSection = styled.div`
   background-size: cover;
   display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
   margin-bottom: 1rem;
   align-items: center;
 
@@ -81,6 +91,15 @@ const TitleSection = styled.div`
     box-shadow: 4px 4px 15px rgba(0,0,0,0.1);
     text-decoration: none;
   }
+
+  @media (max-width: 36rem) {
+    .artist-section,
+    .btn-download {
+      width: 100%;
+      justify-content: center;
+      margin-left: 0;
+    }
+  }
 `;
 
 const toDataURL = (url) =>
@@ -106,15 +125,17 @@ export const Popup = ({ dispatch, image }) => {
     // eslint-disable-next-line
   }, []);
 
+  const closePopup = () => {
+    window.document.body.style.overflow = "auto";
+    dispatch(setPopupState(false));
+    dispatch(setImageObject({}));
+  };
+
   return (
     <PopupOverlay
-      onClick={() => {
-        window.document.body.style.overflow = "auto";
-        dispatch(setPopupState(false));
-        dispatch(setImageObject({}));
-      }}
+      onClick={closePopup}
     >
-      <PopupCard>
+      <PopupCard onClick={(e) => e.stopPropagation()}>
         <TitleSection>
           <a href={image.user.portfolio_url} target="_blank" rel="noopener noreferrer" className="artist-section">
             <div

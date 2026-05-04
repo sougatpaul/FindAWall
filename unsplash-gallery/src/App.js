@@ -11,7 +11,7 @@ import Filler from './components/Filler';
 
 
 const Wrapper = styled.div`
-  width: 100vw;
+  width: 100%;
   min-height: 100vh;
   background: #eeeeee;
   display: flex;

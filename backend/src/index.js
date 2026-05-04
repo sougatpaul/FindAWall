@@ -44,7 +44,7 @@ app.get('/api/photos/search', (req, res) => {
     });
 });
 
-const { PORT = 5000 } = process.env.PORT;
+const { PORT = 5001 } = process.env.PORT;
 
 app.listen(PORT, () => {
   console.log(`Listening on ${PORT}`);

@@ -4,11 +4,13 @@ import { connect } from 'react-redux';
 import { setPopupState, setImageObject } from '../actions/appActions';
 
 const ImageContainer = styled.div`
-  --width-calc : min(20rem, 100%);
+  position: relative;
   width: 20rem;
+  max-width: calc(100vw - 2rem);
   height: 20rem;
+  aspect-ratio: 1;
   overflow: hidden;
-  border-radius: 1rem;
+  border-radius: 0.5rem;
   margin:1rem;
   background: #f3f3f3;
   background-size: cover;
@@ -16,6 +18,9 @@ const ImageContainer = styled.div`
   background-position: center;
 
   .artist-overlay{
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     background: rgba(0,0,0,0.4);
@@ -49,15 +54,40 @@ const ImageContainer = styled.div`
   }
 `;
 
+const Photo = styled.img`
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+`;
+
 const Image = ({image, dispatch}) => {
+  const photoUrl = image && image.urls && (
+    image.urls.small ||
+    image.urls.regular ||
+    image.urls.thumb
+  );
+  const user = (image && image.user) || {};
+  const profileImage = user.profile_image && (
+    user.profile_image.small ||
+    user.profile_image.medium ||
+    user.profile_image.large
+  );
+
+  if (!photoUrl) {
+    return null;
+  }
+
   return (
-    <ImageContainer style={{
-      backgroundImage: `url(${image.urls.small})` 
-    }}>
+    <ImageContainer>
+      <Photo
+        src={photoUrl}
+        alt={image.alt_description || image.description || 'Unsplash photo'}
+      />
       <div 
         className="artist-overlay"
         onClick = {()=>{
-          window.document.body.style.overflowY = 'hidden'
+          window.document.body.style.overflow = 'hidden'
           dispatch(setPopupState(true));
           dispatch(setImageObject(image));
         }}
@@ -66,11 +96,11 @@ const Image = ({image, dispatch}) => {
           <div 
             className="artist-image"
             style={{
-              backgroundImage : `url(${image.user.profile_image.small})`
+              backgroundImage : profileImage ? `url(${profileImage})` : 'none'
             }}
           >
           </div>
-          {image.user.name}
+          {user.name || 'Unknown creator'}
         </div>
       </div>
     </ImageContainer>

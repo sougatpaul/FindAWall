@@ -13,10 +13,15 @@ const Nav = styled.nav`
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
   z-index: 5000;
   h1 {
     font-size: 1.2rem;
     color: white;
+  }
+
+  @media (max-width: 36rem) {
+    padding: 0.5rem 1.5rem;
   }
 `;
 

@@ -13,7 +13,8 @@ const Form = styled.form`
   padding-right: 0;
   border-radius: 0.5rem;
   overflow: hidden;
-  width: 38rem;
+  width: 100%;
+  max-width: 38rem;
   transition: width ease 0.2s;
   /* border: 1px solid white; */
 
@@ -45,22 +46,27 @@ const Search = (props) => {
   const formRef = useRef();
 
   useEffect(() => {
-    setTimeout(()=>setSearch(_=>props.keyword), 200)
+    setSearch(props.keyword || "");
   }, [props.keyword]);
 
-  onsubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    window.scrollTop = 0;
+    const keyword = search.trim();
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
     setTimeout(() => {
-      window.location.href = "/#top";
-      props.dispatch(setKeyword(search));
-      props.dispatch(setImages({ page: 1, imageCount: 15, keyword: search }));
+      props.dispatch(setKeyword(keyword));
+      props.dispatch(setImages({ page: 1, imageCount: 15, keyword }));
       props.dispatch(setPage(2));
     }, 200);
   };
 
   return (
-    <Form ref={formRef} className={props.showNavSearch?'visible':''}>
+    <Form
+      ref={formRef}
+      className={props.showNavSearch ? "visible" : ""}
+      onSubmit={handleSubmit}
+    >
       <input
         onFocus={() => {
           formRef.current.classList.add("focus");
@@ -73,7 +79,7 @@ const Search = (props) => {
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Search for.."
       />
-      <button>
+      <button type="submit" aria-label="Search photos">
         <SearchIcon />
       </button>
     </Form>

@@ -15,7 +15,14 @@ const Container = styled.div`
   flex-wrap: wrap;
 `
 
-const Images = ({images, page, keyword, dispatch}) => {
+const Notice = styled.div`
+  width: 100%;
+  padding: 2rem;
+  color: #555;
+  text-align: center;
+`
+
+const Images = ({images, page, keyword, loading, error, hasMore, dispatch}) => {
 
   useEffect(() => {
     dispatch(setImages({page,imageCount}));
@@ -30,11 +37,15 @@ const Images = ({images, page, keyword, dispatch}) => {
 
   return (
     <div>
+      {error && <Notice>{error}</Notice>}
+      {!loading && !error && images.length === 0 && (
+        <Notice>No images found.</Notice>
+      )}
       <InfiniteScroll
         dataLength={images.length}
         next={fetchLatestImages}
-        hasMore={true}
-        loader={<h4>Loading..</h4>}
+        hasMore={hasMore && !loading && !error}
+        loader={<Notice>Loading...</Notice>}
         >
         <Container>
         {images.map((image, index) => (
@@ -52,7 +63,10 @@ const Images = ({images, page, keyword, dispatch}) => {
 const mapStateToProps = (state) => ({
   images: state.imagesReducer.images,
   keyword: state.imagesReducer.keyword,
-  page: state.imagesReducer.page
+  page: state.imagesReducer.page,
+  loading: state.imagesReducer.loading,
+  error: state.imagesReducer.error,
+  hasMore: state.imagesReducer.hasMore
 })
 
 export default connect(mapStateToProps)(Images);

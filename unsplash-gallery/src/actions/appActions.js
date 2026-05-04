@@ -9,6 +9,6 @@ export const setImageObject = (image) => ({
 })
 
 export const setShowNavSearch = (trigger) => ({
-    type: 'SHOW_NAV_SEARCH',
+    type: 'SET_SHOW_NAV_SEARCH',
     trigger
 })

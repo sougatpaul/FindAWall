@@ -19,6 +19,8 @@ const HeaderContainer = styled.div`
   }
   p {
     margin-bottom: 1.5rem;
+    width: 100%;
+    max-width: 44rem;
   }
 `;
 
@@ -27,7 +29,7 @@ const Header = () => {
     <HeaderContainer>
       <h1>FindaWall</h1>
       <p>
-        Search and download high resolution images conrtributed by various
+        Search and download high resolution images contributed by various
         creators all around the world
       </p>
     </HeaderContainer>
